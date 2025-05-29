@@ -1,0 +1,2691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Dashboard - FashionHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" media="screen and (max-width: 720px)" href="phone.css">
+    <link rel="stylesheet" media="screen and (max-width: 480px)" href="phone.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=search" />
+    <link rel="stylesheet" href="styles.css">
+    <meta name="google-site-verification" content="8RgYPJfTSLxV7mC0G-G_xLtJngd1o0E244hQ__x9AAw" />
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .export-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .export-btn:hover {
+            background: #218838;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin: 0.5rem 0;
+        }
+
+        .trend-indicator {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .trend-up {
+            background: #e6f4ea;
+            color: #137333;
+        }
+
+        .trend-down {
+            background: #fce8e6;
+            color: #c5221f;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-header h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-toggle {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .chart-toggle:hover {
+            background: #e9ecef;
+        }
+
+        .auto-refresh-status {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .page-stats {
+            margin-top: 30px;
+        }
+
+        .page-stats h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .page-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .page-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .page-item:last-child {
+            border-bottom: none;
+        }
+
+        .refresh-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .refresh-btn:hover {
+            background: #444;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            background: #333;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .export-options {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .export-form {
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .date-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .backup-options {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .backup-actions {
+            margin-bottom: 20px;
+        }
+
+        .backup-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .backup-btn:hover {
+            background: #138496;
+        }
+
+        .backup-list {
+            margin-top: 20px;
+        }
+
+        .backup-list table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .backup-list th,
+        .backup-list td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .backup-list th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .backup-list tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .backup-actions-cell {
+            display: flex;
+            gap: 10px;
+        }
+
+        .restore-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .restore-btn:hover {
+            background: #218838;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .seo-overview {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .seo-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .seo-stats-grid .stat-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .seo-stats-grid .stat-card h3 {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .seo-stats-grid .stat-card .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .chart-actions select {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: white;
+        }
+
+        .chart-actions select:focus {
+            outline: none;
+            border-color: #666;
+        }
+
+        .seo-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .vitals-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .vital-item {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 4px;
+            background: #f5f5f5;
+        }
+
+        .vital-label {
+            display: block;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .vital-value {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .vital-status {
+            display: block;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .vital-status.good {
+            background: #e6f4ea;
+            color: #137333;
+        }
+
+        .vital-status.needs-improvement {
+            background: #fef7e0;
+            color: #b06000;
+        }
+
+        .vital-status.poor {
+            background: #fce8e6;
+            color: #c5221f;
+        }
+
+        .content-metrics, .technical-metrics, .content-analysis {
+            display: grid;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .metric-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: #1a73e8;
+            transition: width 0.3s ease;
+        }
+
+        .link-stats, .update-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h1>Visitor Dashboard</h1>
+            <div class="header-actions">
+                <button class="export-btn" onclick="exportData()">Export Data</button>
+                <button class="refresh-btn" onclick="loadStats()">Refresh Stats</button>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Visits</h3>
+                <div class="value" id="totalVisits">0</div>
+                <div class="trend" id="totalVisitsTrend"></div>
+            </div>
+            <div class="stat-card">
+                <h3>Unique Pages</h3>
+                <div class="value" id="uniquePages">0</div>
+                <div class="trend" id="uniquePagesTrend"></div>
+            </div>
+            <div class="stat-card">
+                <h3>Today's Visits</h3>
+                <div class="value" id="todayVisits">0</div>
+                <div class="trend" id="todayVisitsTrend"></div>
+            </div>
+            <div class="stat-card">
+                <h3>Search Engine Traffic</h3>
+                <div class="value" id="searchTraffic">0</div>
+                <div class="trend" id="searchTrafficTrend"></div>
+            </div>
+            <div class="stat-card">
+                <h3>Avg. Visit Duration</h3>
+                <div class="value" id="avgDuration">0s</div>
+                <div class="trend" id="avgDurationTrend"></div>
+            </div>
+            <div class="stat-card">
+                <h3>Avg. Active Time</h3>
+                <div class="value" id="avgActiveTime">0s</div>
+                <div class="trend" id="avgActiveTimeTrend"></div>
+            </div>
+            <div class="stat-card">
+                <h3>Avg. Scroll Depth</h3>
+                <div class="value" id="avgScrollDepth">0%</div>
+                <div class="trend" id="avgScrollDepthTrend"></div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('overview')">Overview</button>
+            <button class="tab" onclick="showTab('devices')">Devices</button>
+            <button class="tab" onclick="showTab('referrers')">Referrers</button>
+            <button class="tab" onclick="showTab('seo')">SEO</button>
+            <button class="tab" onclick="showTab('export')">Export</button>
+            <button class="tab" onclick="showTab('backups')">Backups</button>
+        </div>
+
+        <div id="overview" class="tab-content active">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>Page Visits</h3>
+                    <div class="chart-actions">
+                        <button onclick="toggleChartView('pageVisits')" class="chart-toggle">Toggle View</button>
+                    </div>
+                </div>
+                <canvas id="pageVisitsChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>Daily Visits</h3>
+                    <div class="chart-actions">
+                        <button onclick="toggleChartView('dailyVisits')" class="chart-toggle">Toggle View</button>
+                    </div>
+                </div>
+                <canvas id="dailyVisitsChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>Hourly Distribution</h3>
+                </div>
+                <canvas id="hourlyVisitsChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>Visit Duration Distribution</h3>
+                </div>
+                <canvas id="durationChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>Scroll Depth Distribution</h3>
+                </div>
+                <canvas id="scrollDepthChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>User Engagement</h3>
+                </div>
+                <canvas id="engagementChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>Device Distribution</h3>
+                </div>
+                <canvas id="deviceChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>Browser Distribution</h3>
+                </div>
+                <canvas id="browserChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>OS Distribution</h3>
+                </div>
+                <canvas id="osChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3>Traffic Sources</h3>
+                </div>
+                <canvas id="referrerChart"></canvas>
+            </div>
+        </div>
+
+        <div id="devices" class="tab-content">
+            <div class="chart-container">
+                <h2>Device Distribution</h2>
+                <canvas id="deviceChart"></canvas>
+            </div>
+        </div>
+
+        <div id="referrers" class="tab-content">
+            <div class="chart-container">
+                <h2>Traffic Sources</h2>
+                <canvas id="referrerChart"></canvas>
+            </div>
+        </div>
+
+        <div id="seo" class="tab-content">
+            <div class="seo-overview">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Search Engine Traffic Overview</h3>
+                    </div>
+                    <div class="seo-stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Search Traffic</h3>
+                            <div class="value" id="totalSearchTraffic">0</div>
+                            <div class="trend" id="totalSearchTrafficTrend"></div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Top Search Engine</h3>
+                            <div class="value" id="topSearchEngine">-</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Avg. Search Position</h3>
+                            <div class="value" id="avgSearchPosition">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Search Engine Distribution</h3>
+                        <div class="chart-actions">
+                            <button onclick="toggleChartView('searchEngineChart')">Toggle View</button>
+                        </div>
+                    </div>
+                    <canvas id="searchEngineChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Top Search Queries</h3>
+                        <div class="chart-actions">
+                            <button onclick="toggleChartView('searchQueryChart')">Toggle View</button>
+                        </div>
+                    </div>
+                    <canvas id="searchQueryChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Content Optimization</h3>
+                    </div>
+                    <div class="seo-stats-grid">
+                        <div class="stat-card">
+                            <h3>Pages with Meta Descriptions</h3>
+                            <div class="value" id="pagesWithMeta">0%</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Pages with H1 Tags</h3>
+                            <div class="value" id="pagesWithH1">0%</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Pages with Structured Data</h3>
+                            <div class="value" id="pagesWithStructuredData">0%</div>
+                        </div>
+                    </div>
+                    <canvas id="seoContentChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Image Optimization</h3>
+                    </div>
+                    <div class="seo-stats-grid">
+                        <div class="stat-card">
+                            <h3>Images with Alt Text</h3>
+                            <div class="value" id="imagesWithAlt">0%</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Images with Title</h3>
+                            <div class="value" id="imagesWithTitle">0%</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Total Images</h3>
+                            <div class="value" id="totalImages">0</div>
+                        </div>
+                    </div>
+                    <canvas id="imageOptimizationChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Structured Data Implementation</h3>
+                    </div>
+                    <div class="seo-stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Schema Types</h3>
+                            <div class="value" id="totalSchemaTypes">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Most Used Schema</h3>
+                            <div class="value" id="mostUsedSchema">-</div>
+                        </div>
+                    </div>
+                    <canvas id="structuredDataChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Keyword Performance</h3>
+                        <div class="chart-actions">
+                            <select id="keywordTimeRange" onchange="updateKeywordStats()">
+                                <option value="today">Today</option>
+                                <option value="week">Last 7 Days</option>
+                                <option value="month">Last 30 Days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="seo-stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Keywords</h3>
+                            <div class="value" id="totalKeywords">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Top Performing Keyword</h3>
+                            <div class="value" id="topKeyword">-</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Avg. Keyword Position</h3>
+                            <div class="value" id="avgKeywordPosition">-</div>
+                        </div>
+                    </div>
+                    <canvas id="keywordPerformanceChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Content Quality Analysis</h3>
+                    </div>
+                    <div class="seo-stats-grid">
+                        <div class="stat-card">
+                            <h3>Avg. Content Length</h3>
+                            <div class="value" id="avgContentLength">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Readability Score</h3>
+                            <div class="value" id="readabilityScore">-</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Content Freshness</h3>
+                            <div class="value" id="contentFreshness">-</div>
+                        </div>
+                    </div>
+                    <canvas id="contentQualityChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Technical SEO Health</h3>
+                    </div>
+                    <div class="seo-stats-grid">
+                        <div class="stat-card">
+                            <h3>Page Load Speed</h3>
+                            <div class="value" id="pageLoadSpeed">-</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Mobile Friendly</h3>
+                            <div class="value" id="mobileFriendly">-</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>SSL Status</h3>
+                            <div class="value" id="sslStatus">-</div>
+                        </div>
+                    </div>
+                    <canvas id="technicalSeoChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div id="export" class="tab-content">
+            <div class="export-options">
+                <h2>Export Data</h2>
+                <div class="export-form">
+                    <div class="form-group">
+                        <label for="dateRange">Date Range</label>
+                        <select id="dateRange" onchange="updateExportOptions()">
+                            <option value="today">Today</option>
+                            <option value="week">Last 7 Days</option>
+                            <option value="month">Last 30 Days</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div id="customDateRange" class="form-group" style="display: none;">
+                        <label>Custom Range</label>
+                        <div class="date-inputs">
+                            <input type="date" id="startDate">
+                            <input type="date" id="endDate">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exportFormat">Format</label>
+                        <select id="exportFormat">
+                            <option value="csv">CSV</option>
+                            <option value="json">JSON</option>
+                            <option value="excel">Excel</option>
+                        </select>
+                    </div>
+                    <button class="export-btn" onclick="exportData()">Export</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="backups" class="tab-content">
+            <div class="backup-options">
+                <h2>Backup Management</h2>
+                <div class="backup-actions">
+                    <button class="backup-btn" onclick="createBackup()">Create Backup</button>
+                </div>
+                <div class="backup-list">
+                    <h3>Available Backups</h3>
+                    <table id="backupTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-stats">
+            <h2>Page Visits</h2>
+            <ul class="page-list" id="pageList"></ul>
+        </div>
+
+        <div class="seo-metrics">
+            <h2>SEO Performance</h2>
+            
+            <!-- Core Web Vitals -->
+            <div class="metric-card">
+                <h3>Core Web Vitals</h3>
+                <div class="vitals-grid">
+                    <div class="vital-item">
+                        <span class="vital-label">LCP</span>
+                        <span class="vital-value" id="lcp-value">-</span>
+                        <span class="vital-status" id="lcp-status">-</span>
+                    </div>
+                    <div class="vital-item">
+                        <span class="vital-label">FID</span>
+                        <span class="vital-value" id="fid-value">-</span>
+                        <span class="vital-status" id="fid-status">-</span>
+                    </div>
+                    <div class="vital-item">
+                        <span class="vital-label">CLS</span>
+                        <span class="vital-value" id="cls-value">-</span>
+                        <span class="vital-status" id="cls-status">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Performance -->
+            <div class="metric-card">
+                <h3>Content Performance</h3>
+                <div class="content-metrics">
+                    <div class="metric-item">
+                        <span class="metric-label">Avg. Time on Page</span>
+                        <span class="metric-value" id="avg-time-on-page">-</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Bounce Rate</span>
+                        <span class="metric-value" id="bounce-rate">-</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Scroll Depth</span>
+                        <div class="progress-bar" id="scroll-depth-bar"></div>
+                    </div>
+                </div>
+                <canvas id="content-engagement-chart"></canvas>
+            </div>
+
+            <!-- Technical SEO -->
+            <div class="metric-card">
+                <h3>Technical SEO</h3>
+                <div class="technical-metrics">
+                    <div class="metric-item">
+                        <span class="metric-label">Mobile Friendly</span>
+                        <span class="metric-value" id="mobile-friendly">-</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Page Speed</span>
+                        <div class="progress-bar" id="page-speed-bar"></div>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Crawlability</span>
+                        <span class="metric-value" id="crawlability">-</span>
+                    </div>
+                </div>
+                <canvas id="technical-seo-chart"></canvas>
+            </div>
+
+            <!-- Content Analysis -->
+            <div class="metric-card">
+                <h3>Content Analysis</h3>
+                <div class="content-analysis">
+                    <div class="metric-item">
+                        <span class="metric-label">Internal Links</span>
+                        <div class="link-stats">
+                            <span>Total: <span id="total-links">-</span></span>
+                            <span>Follow: <span id="follow-links">-</span></span>
+                            <span>NoFollow: <span id="nofollow-links">-</span></span>
+                        </div>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Content Updates</span>
+                        <div class="update-stats">
+                            <span>Last Week: <span id="updates-week">-</span></span>
+                            <span>Last Month: <span id="updates-month">-</span></span>
+                        </div>
+                    </div>
+                </div>
+                <canvas id="content-analysis-chart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>Keyword Performance Heatmap</h3>
+                <div class="chart-actions">
+                    <select id="heatmapMetric" onchange="updateKeywordHeatmap()">
+                        <option value="impressions">Impressions</option>
+                        <option value="clicks">Clicks</option>
+                        <option value="ctr">CTR</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="keywordHeatmapChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>SEO Conversion Funnel</h3>
+            </div>
+            <canvas id="seoFunnelChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>Content Performance Bubble Chart</h3>
+                <div class="chart-actions">
+                    <select id="bubbleMetric" onchange="updateContentBubbleChart()">
+                        <option value="engagement">Engagement</option>
+                        <option value="conversion">Conversion</option>
+                        <option value="retention">Retention</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="contentBubbleChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>Export SEO Data</h3>
+                <div class="chart-actions">
+                    <select id="seoExportFormat" onchange="updateSEOExportOptions()">
+                        <option value="csv">CSV</option>
+                        <option value="json">JSON</option>
+                        <option value="excel">Excel</option>
+                    </select>
+                    <select id="seoExportMetrics" multiple>
+                        <option value="keywords">Keywords</option>
+                        <option value="content">Content Performance</option>
+                        <option value="technical">Technical SEO</option>
+                        <option value="conversion">Conversion Data</option>
+                    </select>
+                    <button onclick="exportSEOData()" class="export-btn">Export</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>Competitor Analysis</h3>
+                <div class="chart-actions">
+                    <select id="competitorMetric" onchange="updateCompetitorAnalysis()">
+                        <option value="keywords">Shared Keywords</option>
+                        <option value="content">Content Overlap</option>
+                        <option value="backlinks">Backlink Profile</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="competitorAnalysisChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>Backlink Profile</h3>
+                <div class="chart-actions">
+                    <select id="backlinkMetric" onchange="updateBacklinkAnalysis()">
+                        <option value="domains">Referring Domains</option>
+                        <option value="authority">Domain Authority</option>
+                        <option value="types">Link Types</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="backlinkAnalysisChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>Content Gap Analysis</h3>
+                <div class="chart-actions">
+                    <select id="contentGapMetric" onchange="updateContentGapAnalysis()">
+                        <option value="topics">Topic Coverage</option>
+                        <option value="keywords">Keyword Gaps</option>
+                        <option value="intent">User Intent</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="contentGapAnalysisChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let charts = {};
+        let currentStats = null;
+        let chartViews = {
+            pageVisitsChart: 'bar',
+            dailyVisitsChart: 'line'
+        };
+
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Deactivate all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+            
+            // Activate selected tab
+            event.target.classList.add('active');
+
+            // Load backups if backup tab is selected
+            if (tabId === 'backups') {
+                loadBackups();
+            }
+        }
+
+        function toggleChartView(chartId) {
+            const currentView = chartViews[chartId];
+            const newView = currentView === 'bar' ? 'line' : 'bar';
+            chartViews[chartId] = newView;
+            
+            // Recreate the chart with the new view
+            if (currentStats) {
+                if (chartId === 'pageVisitsChart') {
+                    createPageVisitsChart(currentStats);
+                } else if (chartId === 'dailyVisitsChart') {
+                    createDailyVisitsChart(currentStats);
+                }
+            }
+        }
+
+        function calculateTrend(current, previous) {
+            if (!previous) return { value: 0, direction: 'neutral' };
+            const change = ((current - previous) / previous) * 100;
+            return {
+                value: Math.abs(change).toFixed(1),
+                direction: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral'
+            };
+        }
+
+        function updateTrends(stats) {
+            const today = new Date().toISOString().split('T')[0];
+            const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+            
+            // Total visits trend
+            const totalVisitsTrend = calculateTrend(
+                stats.totalVisits,
+                stats.totalVisits - (stats.dailyStats[today]?.visits || 0)
+            );
+            updateTrendElement('totalVisitsTrend', totalVisitsTrend);
+
+            // Today's visits trend
+            const todayVisitsTrend = calculateTrend(
+                stats.dailyStats[today]?.visits || 0,
+                stats.dailyStats[yesterday]?.visits || 0
+            );
+            updateTrendElement('todayVisitsTrend', todayVisitsTrend);
+
+            // Unique pages trend
+            const uniquePagesTrend = calculateTrend(
+                Object.keys(stats.pageVisits).length,
+                Object.keys(stats.pageVisits).length - 1
+            );
+            updateTrendElement('uniquePagesTrend', uniquePagesTrend);
+        }
+
+        function updateTrendElement(elementId, trend) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            let html = '';
+            if (trend.direction === 'up') {
+                html = `<span class="trend-up">↑ ${trend.value}%</span>`;
+            } else if (trend.direction === 'down') {
+                html = `<span class="trend-down">↓ ${trend.value}%</span>`;
+            } else {
+                html = `<span class="trend">No change</span>`;
+            }
+            element.innerHTML = html;
+        }
+
+        function createPageVisitsChart(stats) {
+            const type = chartViews.pageVisitsChart;
+            createChart('pageVisitsChart', type, {
+                labels: Object.keys(stats.pageVisits),
+                datasets: [{
+                    label: 'Page Visits',
+                    data: Object.values(stats.pageVisits),
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            }, {
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            });
+        }
+
+        function createDailyVisitsChart(stats) {
+            const type = chartViews.dailyVisitsChart;
+            const dailyData = Object.entries(stats.dailyStats)
+                .sort(([a], [b]) => a.localeCompare(b))
+                .slice(-7); // Last 7 days
+
+            createChart('dailyVisitsChart', type, {
+                labels: dailyData.map(([date]) => date),
+                datasets: [{
+                    label: 'Daily Visits',
+                    data: dailyData.map(([, data]) => data.visits),
+                    fill: type === 'line',
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    tension: 0.1
+                }]
+            }, {
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            });
+        }
+
+        function createHourlyVisitsChart(hourlyData) {
+            const hours = Array.from({length: 24}, (_, i) => i);
+            const data = hours.map(hour => hourlyData[hour] || 0);
+            
+            createChart('hourlyVisitsChart', 'bar', {
+                labels: hours.map(h => `${h}:00`),
+                datasets: [{
+                    label: 'Visits',
+                    data: data,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            }, {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            });
+        }
+
+        function createDurationChart(durationData) {
+            const durations = Object.keys(durationData).map(Number).sort((a, b) => a - b);
+            const data = durations.map(duration => durationData[duration]);
+            
+            createChart('durationChart', 'bar', {
+                labels: durations.map(d => `${d}s`),
+                datasets: [{
+                    label: 'Visits',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            }, {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            });
+        }
+
+        function createScrollDepthChart(scrollData) {
+            const depths = Object.keys(scrollData).map(Number).sort((a, b) => a - b);
+            const data = depths.map(depth => scrollData[depth]);
+            
+            createChart('scrollDepthChart', 'bar', {
+                labels: depths.map(d => `${d}%`),
+                datasets: [{
+                    label: 'Visits',
+                    data: data,
+                    backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            }, {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            });
+        }
+
+        function createEngagementChart(engagement) {
+            const interactions = Object.entries(engagement.interactions || {})
+                .map(([count, visits]) => ({count: parseInt(count), visits}))
+                .sort((a, b) => a.count - b.count);
+            
+            const mouseMovements = Object.entries(engagement.mouseMovements || {})
+                .map(([count, visits]) => ({count: parseInt(count), visits}))
+                .sort((a, b) => a.count - b.count);
+            
+            createChart('engagementChart', 'line', {
+                labels: interactions.map(i => i.count),
+                datasets: [
+                    {
+                        label: 'Interactions',
+                        data: interactions.map(i => i.visits),
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Mouse Movements',
+                        data: mouseMovements.map(m => m.visits),
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        tension: 0.4
+                    }
+                ]
+            });
+        }
+
+        function createDeviceChart(deviceData) {
+            createChart('deviceChart', 'pie', {
+                labels: Object.keys(deviceData),
+                datasets: [{
+                    data: Object.values(deviceData),
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            });
+        }
+
+        function createBrowserChart(browserData) {
+            const browsers = Object.keys(browserData);
+            const data = browsers.map(browser => browserData[browser]);
+            
+            createChart('browserChart', 'pie', {
+                labels: browsers,
+                datasets: [{
+                    data: data,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            });
+        }
+
+        function createOSChart(osData) {
+            const os = Object.keys(osData);
+            const data = os.map(os => osData[os]);
+            
+            createChart('osChart', 'pie', {
+                labels: os,
+                datasets: [{
+                    data: data,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            });
+        }
+
+        function createReferrerChart(referrerData) {
+            const ctx = document.getElementById('referrerChart').getContext('2d');
+            const labels = Object.keys(referrerData);
+            const values = Object.values(referrerData);
+
+            createChart('referrerChart', 'pie', {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF'
+                    ]
+                }]
+            }, {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Traffic Sources'
+                    }
+                }
+            });
+        }
+
+        async function loadBackups() {
+            try {
+                const response = await fetch('/backups');
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        window.location.href = '/login';
+                        return;
+                    }
+                    throw new Error('Failed to load backups');
+                }
+
+                const backups = await response.json();
+                const tbody = document.querySelector('#backupTable tbody');
+                tbody.innerHTML = '';
+
+                backups.forEach(backup => {
+                    const date = new Date(backup.timestamp.replace(/-/g, ':'));
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${date.toLocaleDateString()}</td>
+                        <td>${date.toLocaleTimeString()}</td>
+                        <td class="backup-actions-cell">
+                            <button class="restore-btn" onclick="restoreBackup('${backup.filename}')">Restore</button>
+                            <button class="delete-btn" onclick="deleteBackup('${backup.filename}')">Delete</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading backups:', error);
+            }
+        }
+
+        async function createBackup() {
+            try {
+                const response = await fetch('/backups/create', {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to create backup');
+                }
+                await loadBackups();
+            } catch (error) {
+                console.error('Error creating backup:', error);
+            }
+        }
+
+        async function restoreBackup(filename) {
+            if (!confirm('Are you sure you want to restore this backup? Current data will be replaced.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/backups/restore/${filename}`, {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to restore backup');
+                }
+                await loadStats(); // Reload current stats
+                await loadBackups();
+            } catch (error) {
+                console.error('Error restoring backup:', error);
+            }
+        }
+
+        async function deleteBackup(filename) {
+            if (!confirm('Are you sure you want to delete this backup?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/backups/${filename}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to delete backup');
+                }
+                await loadBackups();
+            } catch (error) {
+                console.error('Error deleting backup:', error);
+            }
+        }
+
+        function updateExportOptions() {
+            const dateRange = document.getElementById('dateRange').value;
+            const customRange = document.getElementById('customDateRange');
+            
+            if (dateRange === 'custom') {
+                customRange.style.display = 'block';
+            } else {
+                customRange.style.display = 'none';
+            }
+        }
+
+        function exportData() {
+            if (!currentStats) return;
+
+            const format = document.getElementById('exportFormat').value;
+            const dateRange = document.getElementById('dateRange').value;
+            let startDate, endDate;
+
+            if (dateRange === 'custom') {
+                startDate = new Date(document.getElementById('startDate').value);
+                endDate = new Date(document.getElementById('endDate').value);
+            } else {
+                endDate = new Date();
+                startDate = new Date();
+                if (dateRange === 'week') {
+                    startDate.setDate(startDate.getDate() - 7);
+                } else if (dateRange === 'month') {
+                    startDate.setDate(startDate.getDate() - 30);
+                }
+            }
+
+            // Filter data based on date range
+            const filteredStats = filterStatsByDateRange(currentStats, startDate, endDate);
+
+            // Export based on format
+            switch (format) {
+                case 'csv':
+                    exportCSV(filteredStats);
+                    break;
+                case 'json':
+                    exportJSON(filteredStats);
+                    break;
+                case 'excel':
+                    exportExcel(filteredStats);
+                    break;
+            }
+        }
+
+        function filterStatsByDateRange(stats, startDate, endDate) {
+            const filtered = {
+                totalVisits: 0,
+                pageVisits: {},
+                dailyStats: {}
+            };
+
+            // Filter daily stats
+            Object.entries(stats.dailyStats).forEach(([date, data]) => {
+                const currentDate = new Date(date);
+                if (currentDate >= startDate && currentDate <= endDate) {
+                    filtered.dailyStats[date] = data;
+                    filtered.totalVisits += data.visits;
+                }
+            });
+
+            // Calculate page visits for the period
+            Object.entries(filtered.dailyStats).forEach(([, data]) => {
+                Object.entries(data.pages).forEach(([page, count]) => {
+                    filtered.pageVisits[page] = (filtered.pageVisits[page] || 0) + count;
+                });
+            });
+
+            return filtered;
+        }
+
+        function exportCSV(data) {
+            const rows = [
+                ['Date', 'Page', 'Visits', 'Devices', 'Referrers']
+            ];
+
+            Object.entries(data.dailyStats).forEach(([date, stats]) => {
+                Object.entries(stats.pages).forEach(([page, visits]) => {
+                    rows.push([
+                        date,
+                        page,
+                        visits,
+                        Object.entries(stats.devices).map(([d, c]) => `${d}: ${c}`).join(', '),
+                        Object.entries(stats.referrers).map(([r, c]) => `${r}: ${c}`).join(', ')
+                    ]);
+                });
+            });
+
+            const csvContent = rows.map(row => row.join(',')).join('\n');
+            downloadFile(csvContent, 'visitor-stats.csv', 'text/csv');
+        }
+
+        function exportJSON(data) {
+            const jsonContent = JSON.stringify(data, null, 2);
+            downloadFile(jsonContent, 'visitor-stats.json', 'application/json');
+        }
+
+        function exportExcel(data) {
+            // For Excel export, we'll use CSV format as it's widely supported
+            exportCSV(data);
+        }
+
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        function createChart(canvasId, type, data, options = {}) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (charts[canvasId]) {
+                charts[canvasId].destroy();
+            }
+            
+            // Create new chart
+            charts[canvasId] = new Chart(ctx, {
+                type: type,
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    ...options
+                }
+            });
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch('/dashboard-data');
+                const data = await response.json();
+                const today = new Date().toISOString().split('T')[0];
+                
+                // Update existing stats
+                // ... existing code ...
+                
+                // Update SEO metrics
+                if (data.dailyStats[today]?.seo) {
+                    updateSEOMetrics(data.dailyStats[today].seo);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function calculateAverage(data) {
+            const values = Object.entries(data).map(([key, count]) => parseInt(key) * count);
+            const total = values.reduce((sum, val) => sum + val, 0);
+            const count = Object.values(data).reduce((sum, val) => sum + val, 0);
+            return count > 0 ? total / count : 0;
+        }
+
+        function updateTrend(elementId, current, previous) {
+            const element = document.getElementById(`${elementId}Trend`);
+            if (!element) return;
+            
+            const change = previous ? ((current - previous) / previous) * 100 : 0;
+            const trendClass = change > 0 ? 'trend-up' : change < 0 ? 'trend-down' : '';
+            const trendSymbol = change > 0 ? '↑' : change < 0 ? '↓' : '';
+            
+            element.className = `trend-indicator ${trendClass}`;
+            element.textContent = `${trendSymbol} ${Math.abs(Math.round(change))}%`;
+        }
+
+        function createSearchEngineChart(data) {
+            const ctx = document.getElementById('searchEngineChart').getContext('2d');
+            const labels = Object.keys(data);
+            const values = Object.values(data);
+
+            createChart('searchEngineChart', 'pie', {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF'
+                    ]
+                }]
+            }, {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Search Engine Distribution'
+                    }
+                }
+            });
+        }
+
+        function createSearchQueryChart(data) {
+            const ctx = document.getElementById('searchQueryChart').getContext('2d');
+            const sortedData = Object.entries(data)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 10);
+            
+            const labels = sortedData.map(([query]) => query);
+            const values = sortedData.map(([,count]) => count);
+
+            createChart('searchQueryChart', 'bar', {
+                labels: labels,
+                datasets: [{
+                    label: 'Search Queries',
+                    data: values,
+                    backgroundColor: '#36A2EB'
+                }]
+            }, {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Top 10 Search Queries'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            });
+        }
+
+        function createSEOContentChart(data) {
+            const ctx = document.getElementById('seoContentChart').getContext('2d');
+            const labels = ['H1 Tags', 'H2 Tags', 'Meta Descriptions', 'Structured Data'];
+            const values = [
+                Object.keys(data.h1Tags || {}).length,
+                Object.keys(data.h2Tags || {}).length,
+                Object.keys(data.metaDescriptions || {}).length,
+                data.structuredData?.total || 0
+            ];
+
+            createChart('seoContentChart', 'bar', {
+                labels: labels,
+                datasets: [{
+                    label: 'SEO Elements',
+                    data: values,
+                    backgroundColor: '#4BC0C0'
+                }]
+            }, {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'SEO Content Analysis'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            });
+        }
+
+        function createImageOptimizationChart(data) {
+            const ctx = document.getElementById('imageOptimizationChart').getContext('2d');
+            const labels = ['Total Images', 'With Alt Text', 'With Title'];
+            const values = [
+                data.total || 0,
+                data.withAlt || 0,
+                data.withTitle || 0
+            ];
+
+            createChart('imageOptimizationChart', 'bar', {
+                labels: labels,
+                datasets: [{
+                    label: 'Image Optimization',
+                    data: values,
+                    backgroundColor: '#FFCE56'
+                }]
+            }, {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Image Optimization Status'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            });
+        }
+
+        function createStructuredDataChart(data) {
+            const types = Object.entries(data.structuredData?.types || {})
+                .sort(([,a], [,b]) => b - a);
+            
+            const labels = types.map(([type]) => type);
+            const values = types.map(([,count]) => count);
+
+            createChart('structuredDataChart', 'bar', {
+                labels: labels,
+                datasets: [{
+                    label: 'Schema Types',
+                    data: values,
+                    backgroundColor: '#9966FF'
+                }]
+            }, {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Structured Data Types Distribution'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            });
+        }
+
+        function createKeywordPerformanceChart(data) {
+            const keywords = Object.entries(data.keywords || {})
+                .sort(([,a], [,b]) => b.impressions - a.impressions)
+                .slice(0, 10);
+            
+            const labels = keywords.map(([keyword]) => keyword);
+            const impressions = keywords.map(([,data]) => data.impressions);
+            const clicks = keywords.map(([,data]) => data.clicks);
+            const positions = keywords.map(([,data]) => data.position);
+
+            createChart('keywordPerformanceChart', 'bar', {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Impressions',
+                        data: impressions,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Clicks',
+                        data: clicks,
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Position',
+                        data: positions,
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'position'
+                    }
+                ]
+            }, {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Count'
+                        }
+                    },
+                    position: {
+                        beginAtZero: true,
+                        reverse: true,
+                        title: {
+                            display: true,
+                            text: 'Position'
+                        }
+                    }
+                }
+            });
+        }
+
+        function createContentQualityChart(data) {
+            const metrics = {
+                'Content Length': data.avgLength || 0,
+                'Readability Score': data.readabilityScore || 0,
+                'Keyword Density': data.keywordDensity || 0,
+                'Internal Links': data.internalLinks || 0,
+                'External Links': data.externalLinks || 0
+            };
+
+            createChart('contentQualityChart', 'radar', {
+                labels: Object.keys(metrics),
+                datasets: [{
+                    label: 'Content Quality Metrics',
+                    data: Object.values(metrics),
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(75, 192, 192, 1)'
+                }]
+            }, {
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            });
+        }
+
+        function createTechnicalSeoChart(data) {
+            const metrics = {
+                'Page Load Speed': data.pageLoadSpeed || 0,
+                'Mobile Friendly': data.mobileFriendly ? 100 : 0,
+                'SSL Status': data.sslStatus ? 100 : 0,
+                'Meta Tags': data.metaTags || 0,
+                'Structured Data': data.structuredData || 0
+            };
+
+            createChart('technicalSeoChart', 'radar', {
+                labels: Object.keys(metrics),
+                datasets: [{
+                    label: 'Technical SEO Score',
+                    data: Object.values(metrics),
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    pointBackgroundColor: 'rgba(153, 102, 255, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(153, 102, 255, 1)'
+                }]
+            }, {
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            });
+        }
+
+        function updateTechnicalSeoStats(data) {
+            const technicalData = data.technical || {};
+            
+            // Update technical SEO stats
+            document.getElementById('pageLoadSpeed').textContent = 
+                technicalData.pageLoadSpeed ? `${technicalData.pageLoadSpeed}s` : '-';
+            document.getElementById('mobileFriendly').textContent = 
+                technicalData.mobileFriendly ? 'Yes' : 'No';
+            document.getElementById('sslStatus').textContent = 
+                technicalData.sslStatus ? 'Secure' : 'Not Secure';
+
+            // Create technical SEO chart
+            createTechnicalSeoChart(technicalData);
+        }
+
+        function updateSEOStats(data) {
+            const today = new Date().toISOString().split('T')[0];
+            const seoData = data.dailyStats[today]?.seo || {};
+
+            // Update search traffic stats
+            const totalSearchTraffic = Object.values(seoData.searchEngines || {}).reduce((a, b) => a + b, 0);
+            document.getElementById('totalSearchTraffic').textContent = totalSearchTraffic;
+
+            // Find top search engine
+            const topEngine = Object.entries(seoData.searchEngines || {})
+                .sort(([,a], [,b]) => b - a)[0];
+            document.getElementById('topSearchEngine').textContent = topEngine ? topEngine[0] : '-';
+
+            // Update content optimization stats
+            const totalPages = Object.keys(data.pageVisits).length;
+            const pagesWithMeta = Object.keys(seoData.metaDescriptions || {}).length;
+            const pagesWithH1 = Object.keys(seoData.h1Tags || {}).length;
+            const pagesWithStructuredData = seoData.structuredData?.total || 0;
+
+            document.getElementById('pagesWithMeta').textContent = `${Math.round((pagesWithMeta / totalPages) * 100)}%`;
+            document.getElementById('pagesWithH1').textContent = `${Math.round((pagesWithH1 / totalPages) * 100)}%`;
+            document.getElementById('pagesWithStructuredData').textContent = `${Math.round((pagesWithStructuredData / totalPages) * 100)}%`;
+
+            // Update image optimization stats
+            const images = seoData.images || {};
+            const totalImages = images.total || 0;
+            const imagesWithAlt = images.withAlt || 0;
+            const imagesWithTitle = images.withTitle || 0;
+
+            document.getElementById('totalImages').textContent = totalImages;
+            document.getElementById('imagesWithAlt').textContent = `${Math.round((imagesWithAlt / totalImages) * 100)}%`;
+            document.getElementById('imagesWithTitle').textContent = `${Math.round((imagesWithTitle / totalImages) * 100)}%`;
+
+            // Update structured data stats
+            const schemaTypes = seoData.structuredData?.types || {};
+            const totalSchemaTypes = Object.keys(schemaTypes).length;
+            const mostUsedSchema = Object.entries(schemaTypes)
+                .sort(([,a], [,b]) => b - a)[0];
+
+            document.getElementById('totalSchemaTypes').textContent = totalSchemaTypes;
+            document.getElementById('mostUsedSchema').textContent = mostUsedSchema ? mostUsedSchema[0] : '-';
+
+            // Create charts
+            createSearchEngineChart(seoData.searchEngines || {});
+            createSearchQueryChart(seoData.searchQueries || {});
+            createSEOContentChart(seoData);
+            createImageOptimizationChart(seoData.images || {});
+            createStructuredDataChart(seoData);
+            createKeywordPerformanceChart(seoData);
+            updateContentQualityStats(data);
+
+            // Add technical SEO updates
+            updateTechnicalSeoStats(data);
+
+            // Add new chart updates
+            createKeywordHeatmap(seoData, 'impressions');
+            createSEOFunnelChart(seoData);
+            createContentBubbleChart(seoData, 'engagement');
+
+            // Add new analysis updates
+            createCompetitorAnalysisChart(seoData, 'keywords');
+            createBacklinkAnalysisChart(seoData, 'domains');
+            createContentGapAnalysisChart(seoData, 'topics');
+        }
+
+        function updateKeywordStats() {
+            const timeRange = document.getElementById('keywordTimeRange').value;
+            const today = new Date().toISOString().split('T')[0];
+            const seoData = currentStats.dailyStats[today]?.seo || {};
+
+            // Update keyword stats
+            const keywords = seoData.keywords || {};
+            const totalKeywords = Object.keys(keywords).length;
+            const topKeyword = Object.entries(keywords)
+                .sort(([,a], [,b]) => b.impressions - a.impressions)[0];
+            const avgPosition = Object.values(keywords)
+                .reduce((sum, data) => sum + data.position, 0) / totalKeywords;
+
+            document.getElementById('totalKeywords').textContent = totalKeywords;
+            document.getElementById('topKeyword').textContent = topKeyword ? topKeyword[0] : '-';
+            document.getElementById('avgKeywordPosition').textContent = 
+                avgPosition ? avgPosition.toFixed(1) : '-';
+
+            // Create keyword performance chart
+            createKeywordPerformanceChart(seoData);
+        }
+
+        function updateContentQualityStats(data) {
+            const contentData = data.contentQuality || {};
+            
+            // Update content quality stats
+            document.getElementById('avgContentLength').textContent = 
+                `${Math.round(contentData.avgLength || 0)} words`;
+            document.getElementById('readabilityScore').textContent = 
+                contentData.readabilityScore ? `${contentData.readabilityScore}/100` : '-';
+            document.getElementById('contentFreshness').textContent = 
+                contentData.lastUpdated ? new Date(contentData.lastUpdated).toLocaleDateString() : '-';
+
+            // Create content quality chart
+            createContentQualityChart(contentData);
+        }
+
+        // Update Core Web Vitals
+        function updateCoreWebVitals(data) {
+            const lcp = data.coreWebVitals.lcp;
+            const fid = data.coreWebVitals.fid;
+            const cls = data.coreWebVitals.cls;
+
+            // Update LCP
+            document.getElementById('lcp-value').textContent = `${lcp.toFixed(2)}s`;
+            const lcpStatus = document.getElementById('lcp-status');
+            if (lcp <= 2.5) {
+                lcpStatus.textContent = 'Good';
+                lcpStatus.className = 'vital-status good';
+            } else if (lcp <= 4) {
+                lcpStatus.textContent = 'Needs Improvement';
+                lcpStatus.className = 'vital-status needs-improvement';
+            } else {
+                lcpStatus.textContent = 'Poor';
+                lcpStatus.className = 'vital-status poor';
+            }
+
+            // Update FID
+            document.getElementById('fid-value').textContent = `${fid.toFixed(2)}ms`;
+            const fidStatus = document.getElementById('fid-status');
+            if (fid <= 100) {
+                fidStatus.textContent = 'Good';
+                fidStatus.className = 'vital-status good';
+            } else if (fid <= 300) {
+                fidStatus.textContent = 'Needs Improvement';
+                fidStatus.className = 'vital-status needs-improvement';
+            } else {
+                fidStatus.textContent = 'Poor';
+                fidStatus.className = 'vital-status poor';
+            }
+
+            // Update CLS
+            document.getElementById('cls-value').textContent = cls.toFixed(3);
+            const clsStatus = document.getElementById('cls-status');
+            if (cls <= 0.1) {
+                clsStatus.textContent = 'Good';
+                clsStatus.className = 'vital-status good';
+            } else if (cls <= 0.25) {
+                clsStatus.textContent = 'Needs Improvement';
+                clsStatus.className = 'vital-status needs-improvement';
+            } else {
+                clsStatus.textContent = 'Poor';
+                clsStatus.className = 'vital-status poor';
+            }
+        }
+
+        // Update Content Performance
+        function updateContentPerformance(data) {
+            const performance = data.contentPerformance;
+            
+            // Update time on page
+            const avgTime = performance.timeOnPage.reduce((a, b) => a + b, 0) / performance.timeOnPage.length;
+            document.getElementById('avg-time-on-page').textContent = `${avgTime.toFixed(1)}s`;
+            
+            // Update bounce rate
+            document.getElementById('bounce-rate').textContent = `${performance.bounceRate.toFixed(1)}%`;
+            
+            // Update scroll depth
+            const scrollDepthBar = document.getElementById('scroll-depth-bar');
+            const maxScroll = Math.max(...Object.keys(performance.scrollDepth).map(Number));
+            scrollDepthBar.innerHTML = `<div class="progress-bar-fill" style="width: ${maxScroll}%"></div>`;
+            
+            // Update content engagement chart
+            const ctx = document.getElementById('content-engagement-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Clicks', 'Hovers', 'Interactions'],
+                    datasets: [{
+                        label: 'Content Engagement',
+                        data: [
+                            performance.contentEngagement.clicks,
+                            performance.contentEngagement.hovers,
+                            performance.contentEngagement.interactions
+                        ],
+                        backgroundColor: ['#1a73e8', '#34a853', '#fbbc04']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update Technical SEO
+        function updateTechnicalSEO(data) {
+            const technical = data.technicalSEO;
+            
+            // Update mobile friendly status
+            const mobileFriendly = document.getElementById('mobile-friendly');
+            const isMobileFriendly = technical.mobileResponsiveness.mobile > 0;
+            mobileFriendly.textContent = isMobileFriendly ? 'Yes' : 'No';
+            mobileFriendly.className = `metric-value ${isMobileFriendly ? 'good' : 'poor'}`;
+            
+            // Update page speed
+            const pageSpeedBar = document.getElementById('page-speed-bar');
+            const avgPageLoad = technical.siteSpeed.pageLoad.reduce((a, b) => a + b, 0) / technical.siteSpeed.pageLoad.length;
+            const speedScore = Math.max(0, 100 - (avgPageLoad / 1000));
+            pageSpeedBar.innerHTML = `<div class="progress-bar-fill" style="width: ${speedScore}%"></div>`;
+            
+            // Update crawlability
+            const crawlability = document.getElementById('crawlability');
+            const isCrawlable = technical.crawlability.isCrawlable > 0;
+            crawlability.textContent = isCrawlable ? 'Good' : 'Needs Improvement';
+            crawlability.className = `metric-value ${isCrawlable ? 'good' : 'needs-improvement'}`;
+            
+            // Update technical SEO chart
+            const ctx = document.getElementById('technical-seo-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Mobile', 'Tablet', 'Desktop'],
+                    datasets: [{
+                        label: 'Device Distribution',
+                        data: [
+                            technical.mobileResponsiveness.mobile,
+                            technical.mobileResponsiveness.tablet,
+                            technical.mobileResponsiveness.desktop
+                        ],
+                        backgroundColor: 'rgba(26, 115, 232, 0.2)',
+                        borderColor: '#1a73e8',
+                        pointBackgroundColor: '#1a73e8'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update Content Analysis
+        function updateContentAnalysis(data) {
+            const analysis = data.contentPerformance;
+            
+            // Update link stats
+            document.getElementById('total-links').textContent = analysis.internalLinks.total;
+            document.getElementById('follow-links').textContent = analysis.internalLinks.follow;
+            document.getElementById('nofollow-links').textContent = analysis.internalLinks.nofollow;
+            
+            // Update content updates
+            document.getElementById('updates-week').textContent = analysis.contentUpdates.lastWeek;
+            document.getElementById('updates-month').textContent = analysis.contentUpdates.lastMonth;
+            
+            // Update content analysis chart
+            const ctx = document.getElementById('content-analysis-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Content Updates',
+                        data: [
+                            analysis.contentUpdates.lastWeek,
+                            analysis.contentUpdates.lastMonth / 4,
+                            analysis.contentUpdates.lastMonth / 2,
+                            analysis.contentUpdates.lastMonth
+                        ],
+                        borderColor: '#1a73e8',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function createKeywordHeatmap(data, metric) {
+            const keywords = Object.entries(data.keywords || {})
+                .sort(([,a], [,b]) => b[metric] - a[metric])
+                .slice(0, 20);
+            
+            const labels = keywords.map(([keyword]) => keyword);
+            const values = keywords.map(([,data]) => data[metric]);
+            const maxValue = Math.max(...values);
+            
+            createChart('keywordHeatmapChart', 'bar', {
+                labels: labels,
+                datasets: [{
+                    label: metric.charAt(0).toUpperCase() + metric.slice(1),
+                    data: values,
+                    backgroundColor: values.map(v => {
+                        const intensity = (v / maxValue) * 0.8;
+                        return `rgba(54, 162, 235, ${intensity})`;
+                    }),
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            }, {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Keyword Performance Heatmap'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            });
+        }
+
+        function createSEOFunnelChart(data) {
+            const funnelData = {
+                impressions: data.totalImpressions || 0,
+                clicks: data.totalClicks || 0,
+                conversions: data.totalConversions || 0,
+                revenue: data.totalRevenue || 0
+            };
+            
+            createChart('seoFunnelChart', 'bar', {
+                labels: ['Impressions', 'Clicks', 'Conversions', 'Revenue'],
+                datasets: [{
+                    label: 'SEO Funnel',
+                    data: Object.values(funnelData),
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(153, 102, 255, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            }, {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'SEO Conversion Funnel'
+                    }
+                }
+            });
+        }
+
+        function createContentBubbleChart(data, metric) {
+            const contentData = Object.entries(data.contentPerformance || {})
+                .map(([page, metrics]) => ({
+                    x: metrics.engagement,
+                    y: metrics.conversion,
+                    r: metrics.retention * 10,
+                    label: page
+                }));
+            
+            createChart('contentBubbleChart', 'bubble', {
+                datasets: [{
+                    label: 'Content Performance',
+                    data: contentData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)'
+                }]
+            }, {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const data = context.raw;
+                                return [
+                                    `Page: ${data.label}`,
+                                    `Engagement: ${data.x}`,
+                                    `Conversion: ${data.y}`,
+                                    `Retention: ${data.r/10}`
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Engagement'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Conversion'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateKeywordHeatmap() {
+            const metric = document.getElementById('heatmapMetric').value;
+            const today = new Date().toISOString().split('T')[0];
+            const seoData = currentStats.dailyStats[today]?.seo || {};
+            createKeywordHeatmap(seoData, metric);
+        }
+
+        function updateContentBubbleChart() {
+            const metric = document.getElementById('bubbleMetric').value;
+            const today = new Date().toISOString().split('T')[0];
+            const seoData = currentStats.dailyStats[today]?.seo || {};
+            createContentBubbleChart(seoData, metric);
+        }
+
+        function updateSEOExportOptions() {
+            const format = document.getElementById('seoExportFormat').value;
+            const metricsSelect = document.getElementById('seoExportMetrics');
+            
+            // Enable/disable multiple selection based on format
+            metricsSelect.multiple = format !== 'excel';
+        }
+
+        function exportSEOData() {
+            const format = document.getElementById('seoExportFormat').value;
+            const metrics = Array.from(document.getElementById('seoExportMetrics').selectedOptions)
+                .map(option => option.value);
+            
+            const today = new Date().toISOString().split('T')[0];
+            const seoData = currentStats.dailyStats[today]?.seo || {};
+            
+            // Filter data based on selected metrics
+            const filteredData = {};
+            metrics.forEach(metric => {
+                switch(metric) {
+                    case 'keywords':
+                        filteredData.keywords = seoData.keywords || {};
+                        break;
+                    case 'content':
+                        filteredData.contentPerformance = seoData.contentPerformance || {};
+                        break;
+                    case 'technical':
+                        filteredData.technicalSEO = seoData.technicalSEO || {};
+                        break;
+                    case 'conversion':
+                        filteredData.conversion = {
+                            impressions: seoData.totalImpressions || 0,
+                            clicks: seoData.totalClicks || 0,
+                            conversions: seoData.totalConversions || 0,
+                            revenue: seoData.totalRevenue || 0
+                        };
+                        break;
+                }
+            });
+            
+            // Export based on format
+            switch(format) {
+                case 'csv':
+                    exportSEOToCSV(filteredData);
+                    break;
+                case 'json':
+                    exportSEOToJSON(filteredData);
+                    break;
+                case 'excel':
+                    exportSEOToExcel(filteredData);
+                    break;
+            }
+        }
+
+        function exportSEOToCSV(data) {
+            const rows = [];
+            
+            // Add headers
+            const headers = ['Metric', 'Value', 'Details'];
+            rows.push(headers);
+            
+            // Add data rows
+            Object.entries(data).forEach(([category, metrics]) => {
+                if (typeof metrics === 'object') {
+                    Object.entries(metrics).forEach(([key, value]) => {
+                        if (typeof value === 'object') {
+                            rows.push([category, key, JSON.stringify(value)]);
+                        } else {
+                            rows.push([category, key, value]);
+                        }
+                    });
+                } else {
+                    rows.push([category, '', metrics]);
+                }
+            });
+            
+            const csvContent = rows.map(row => row.join(',')).join('\n');
+            downloadFile(csvContent, 'seo-data.csv', 'text/csv');
+        }
+
+        function exportSEOToJSON(data) {
+            const jsonContent = JSON.stringify(data, null, 2);
+            downloadFile(jsonContent, 'seo-data.json', 'application/json');
+        }
+
+        function exportSEOToExcel(data) {
+            // For Excel export, we'll use CSV format as it's widely supported
+            exportSEOToCSV(data);
+        }
+
+        function createCompetitorAnalysisChart(data, metric) {
+            const competitors = Object.entries(data.competitors || {})
+                .map(([name, metrics]) => ({
+                    name,
+                    value: metrics[metric] || 0,
+                    details: metrics
+                }))
+                .sort((a, b) => b.value - a.value);
+            
+            createChart('competitorAnalysisChart', 'bar', {
+                labels: competitors.map(c => c.name),
+                datasets: [{
+                    label: metric.charAt(0).toUpperCase() + metric.slice(1),
+                    data: competitors.map(c => c.value),
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            }, {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            afterLabel: function(context) {
+                                const competitor = competitors[context.dataIndex];
+                                return [
+                                    `Total Keywords: ${competitor.details.totalKeywords}`,
+                                    `Shared Keywords: ${competitor.details.sharedKeywords}`,
+                                    `Content Overlap: ${competitor.details.contentOverlap}%`
+                                ];
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createBacklinkAnalysisChart(data, metric) {
+            let chartData;
+            
+            switch(metric) {
+                case 'domains':
+                    chartData = {
+                        labels: ['High DA', 'Medium DA', 'Low DA'],
+                        data: [
+                            data.highAuthority || 0,
+                            data.mediumAuthority || 0,
+                            data.lowAuthority || 0
+                        ]
+                    };
+                    break;
+                case 'authority':
+                    chartData = {
+                        labels: Object.keys(data.domainAuthority || {}),
+                        data: Object.values(data.domainAuthority || {})
+                    };
+                    break;
+                case 'types':
+                    chartData = {
+                        labels: Object.keys(data.linkTypes || {}),
+                        data: Object.values(data.linkTypes || {})
+                    };
+                    break;
+            }
+            
+            createChart('backlinkAnalysisChart', 'pie', {
+                labels: chartData.labels,
+                datasets: [{
+                    data: chartData.data,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            });
+        }
+
+        function createContentGapAnalysisChart(data, metric) {
+            let chartData;
+            
+            switch(metric) {
+                case 'topics':
+                    chartData = {
+                        labels: Object.keys(data.topicCoverage || {}),
+                        data: Object.values(data.topicCoverage || {})
+                    };
+                    break;
+                case 'keywords':
+                    chartData = {
+                        labels: ['High Volume', 'Medium Volume', 'Low Volume'],
+                        data: [
+                            data.highVolumeGaps || 0,
+                            data.mediumVolumeGaps || 0,
+                            data.lowVolumeGaps || 0
+                        ]
+                    };
+                    break;
+                case 'intent':
+                    chartData = {
+                        labels: ['Informational', 'Transactional', 'Navigational'],
+                        data: [
+                            data.informationalGaps || 0,
+                            data.transactionalGaps || 0,
+                            data.navigationalGaps || 0
+                        ]
+                    };
+                    break;
+            }
+            
+            createChart('contentGapAnalysisChart', 'radar', {
+                labels: chartData.labels,
+                datasets: [{
+                    label: 'Content Gaps',
+                    data: chartData.data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(75, 192, 192, 1)'
+                }]
+            });
+        }
+
+        function updateCompetitorAnalysis() {
+            const metric = document.getElementById('competitorMetric').value;
+            const today = new Date().toISOString().split('T')[0];
+            const seoData = currentStats.dailyStats[today]?.seo || {};
+            createCompetitorAnalysisChart(seoData, metric);
+        }
+
+        function updateBacklinkAnalysis() {
+            const metric = document.getElementById('backlinkMetric').value;
+            const today = new Date().toISOString().split('T')[0];
+            const seoData = currentStats.dailyStats[today]?.seo || {};
+            createBacklinkAnalysisChart(seoData, metric);
+        }
+
+        function updateContentGapAnalysis() {
+            const metric = document.getElementById('contentGapMetric').value;
+            const today = new Date().toISOString().split('T')[0];
+            const seoData = currentStats.dailyStats[today]?.seo || {};
+            createContentGapAnalysisChart(seoData, metric);
+        }
+
+        // Load stats when page loads
+        window.onload = loadStats;
+
+        // Refresh stats every 30 seconds
+        setInterval(loadStats, 30000);
+    </script>
+</body>
+</html> 
